@@ -1,19 +1,16 @@
 from scrapy.spiders 		import Spider
 from scrapy.selector 		import Selector
-from nettuts.items		import NettutsItem
 from scrapy.http		import Request
+from melodysoft.items       import MelodysoftItem
 
 class MelodysoftSpider(Spider):
     name = 'melodysoft'
-    start_urls = ['http://gbooks1.melodysoft.com/app?ID=pizarra1']
-    rules = (
-        # Extract links for next pages
-        Rule(LinkExtractor(allow=(), restrict_xpaths=("/html/body/center[4]/table/tr/td/font/b/a[8]/@href")), callback='parse_page', follow=True),
-    )
+    start_urls = ['http://gbooks1.melodysoft.com/app?ID=pizarra1&DOC=%s' % page for page in xrange(1, 21479, 30)]
 
     def parse(self, response):
         print '##########################################################################################'
-        print response.xpath("/html/body/center[4]/table/tr/td/font/b/a[8]/@href").extract()[0]
+        #print response.xpath("/html/body/center[4]/table/tr/td/font/b/a[8]/@href").extract()[0]
+        print response.status
         print '##########################################################################################'
         return self.parse_page(response)
 
@@ -38,5 +35,4 @@ class MelodysoftSpider(Spider):
                 'place_to':         place_to.encode('ascii', 'ignore'),
                 'academic_level':   academic_level.encode('ascii', 'ignore'),
                 'post_date':        post_date.encode('ascii', 'ignore'),
-
             }
